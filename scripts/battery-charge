@@ -1,0 +1,24 @@
+#!/bin/bash
+
+num_regex='^[0-9]+$'
+if [ -z "$1" ] ; then
+   bat_num=0
+elif [[ $1 =~ ${num_regex} ]] ; then
+   bat_num=$1
+else
+  bat_num=0 
+fi
+
+tmp=$(exec acpi)
+battery="Battery ${bat_num}"
+regex=" *${battery}: +[a-zA-Z]+, +[0-9]+% *"
+val=$( [[ "$tmp" =~ $regex ]] && echo $BASH_REMATCH)
+regex="[0-9]+%"
+value=$( [[ "$val" =~ $regex ]] && echo $BASH_REMATCH)
+value=${value// /}
+value=${value//%/}
+if [[ -z "$value" ]] ; then
+	echo 0
+	exit 0
+fi
+echo $value

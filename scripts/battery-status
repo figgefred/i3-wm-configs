@@ -1,0 +1,22 @@
+#!/bin/bash
+
+num_regex='^[0-9]+$'
+if [ -z "$1" ] ; then
+   bat_num=0
+elif [[ $1 =~ ${num_regex} ]] ; then
+   bat_num=$1
+else
+   bat_num=0 
+fi
+
+tmp=$(exec acpi)
+regex="Battery ${bat_num}: +[A-Za-z]+, +[0-9]+%"
+val=$( [[ "$tmp" =~ $regex ]] && echo $BASH_REMATCH)
+if [[ -z "$val" || "$val" == "" ]] ; then
+	echo "Disconnected"
+	exit
+fi
+value=$( [[ "$val" =~ (('Fully')|('Full')|('Charging')|('Discharging')|('Unknown')|('unknown')) ]] && echo $BASH_REMATCH)
+value=${value// /}
+value=${value//Unknown/Idle}
+echo $value

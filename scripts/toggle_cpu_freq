@@ -1,0 +1,65 @@
+#!/bin/bash
+
+function print {
+   local freq=$1
+   local default_freq=`/opt/scripts/default-cpu-freq_max`
+   let "freq_print= (( $freq/1000  ))"
+   if [ "${noprint}" == "false" ] ; then
+	if [ -z "${default_freq}" ] ; then
+		default_freq=3100000
+	fi
+	echo "${freq_print}MHz"
+	if [ "${freq}" -ne "${default_freq}" ] ; then
+		echo "${freq_print}MHz"
+		echo "#FF0000"
+	fi
+   fi
+}
+
+noprint=true
+curr_freq=`/opt/scripts/check-cpu-freq_max`
+if [ ! -z "$1" ] ; then
+   noprint=false
+   if [ -z "$2" ] ; then
+      print ${curr_freq}
+      exit 0
+   else
+	click=${2}
+   fi
+else
+	click=1
+fi
+
+first="none"
+new="none"
+
+if [ "${click}" -eq "1" ] ; then
+	array=( 1600000 1900000 2200000 2500000 2800000 3100000 )
+else
+	array=( 3100000 2800000 2500000 2200000 1900000 1600000 )
+
+fi
+first="none"
+new="none"
+stop=false
+for f in "${array[@]}"
+do
+	new="$f"
+	if [ "${stop}" == "true" ] ; then
+		break;
+	fi
+	if [ "${first}" == "none" ] ; then
+		first=$f
+	fi
+	if [ "$f" == "${curr_freq}" ] ; then
+		stop=true
+	fi
+done
+if [ "$f" == "${curr_freq}" ] ; then
+	new=${first}
+fi
+
+sudo cpupower frequency-set --max ${new} > /dev/null
+curr_freq=`/opt/scripts/check-cpu-freq_max`
+print ${curr_freq}
+

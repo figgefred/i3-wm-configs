@@ -1,0 +1,4 @@
+#!/bin/bash
+val=`./nvidia-status`
+echo "val: ${val}"
+if [ "${val}" -eq "OFF" ] ; then echo "hej" ; else echo "bajs"; fi

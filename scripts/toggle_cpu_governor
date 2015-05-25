@@ -1,0 +1,56 @@
+#!/bin/bash
+function print_powermode {
+   local pw=$1
+   if [ "${noprint}" == "false" ] ; then
+      if [ "powersave" != ${pw} ] ; then
+         echo "${pw}"
+         echo "${pw}"
+         echo "#FF0000"
+      else
+         echo "${pw}"
+      fi
+   fi
+}
+
+noprint=true
+curr_gov=`/opt/scripts/check-cpu-scaling_governor`
+if [ ! -z "$1" ] ; then
+   noprint=false
+   if [ -z "$2" ] ; then
+      print_powermode ${curr_gov}
+      exit 0
+   fi
+fi
+
+first="none"
+new="none"
+for g in `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors` 
+do
+	if [ "${first}" == "none" ] ; then
+		first=$g
+	fi
+	if [ "$g" == "${curr_gov}" ] ; then
+		if [ "${new}" != "none" ] ; then
+			break;
+		fi
+	fi
+	new="$g"
+done
+if [ "$g" == "${curr_gov}" ] ; then
+	new=${first}
+fi
+
+. /etc/default/cpupower
+if [ -z "${max_freq}" ] ; then
+	max_freq=`/opt/scripts/default-cpu-freq_max`
+fi
+
+#echo "this is ${max_freq}"
+sudo cpupower frequency-set --max ${max_freq} > /dev/null
+#echo "set new max back to ${max_freq}"
+sudo cpupower frequency-set --governor ${new} > /dev/null
+curr_gov=`/opt/scripts/check-cpu-scaling_governor`
+print_powermode ${curr_gov}
+
+# Signal 'cpu-freq'
+pkill -RTMIN+8 i3blocks

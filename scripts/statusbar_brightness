@@ -1,0 +1,14 @@
+#!/bin/bash
+num_regex='^[0-9]+$'
+if [[ -z "$1" ]] ; then
+	full=100
+elif [[ $1 =~ ${num_regex} ]] ; then
+	full=$1
+	#echo "value is ${value}"
+else
+	full=100
+fi
+brightness=`xbacklight -get`
+statusbar=`~/.i3/scripts/statusbar ${brightness} 100 ${full}`
+echo "${statusbar}"
+

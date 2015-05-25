@@ -1,0 +1,82 @@
+#!/bin/bash
+
+function notify {
+	app=$1
+	msg=$2
+	notify-send --app-name="${app}" "${msg}"
+}
+
+if [ -z "$1" ] ; then
+	primary="LVDS1"
+else
+   primary="$1"
+fi
+if [ "$2" == "force" ] ; then
+   force=true
+else
+   force=false
+fi
+
+app_name="xrasengan"
+
+# Check if output exists
+unknown=true
+for disp in `xrasengan --list-all`
+do
+	if [ "${disp}" == "${primary}" ] ; then
+		unknown=false
+		break
+	fi
+done
+if [ "${unknown}" == true ] ; then
+	echo "Unknown display output '${primary}'"
+	notify ${app_name} "Unknown display output ${primary}"
+	exit 0
+fi
+
+# Check if output is already connected
+ctr=0
+conn=false
+for disp in `xrasengan --list-connected`
+do
+   let "ctr= (( ${ctr} + 1 ))"
+   if [ ${disp} == ${primary} ] ; then
+      conn=true
+   fi
+done
+if [ "${force}" != "true" ] ; then
+   if [ "${conn}" == "true" ] ; then
+      if [ "${ctr}" -lt 2 ] ; then
+         echo "Already connected (${primary}) ${conn}"
+         notify ${app_name} "Already connected (${primary})"
+         exit 0
+      fi
+   fi
+fi
+
+# Check if output is disconnected
+ctr=0
+conn=false
+for disp in `xrasengan --list-disconnected`
+do
+   let "ctr= (( ${ctr} + 1 ))"
+   if [ ${disp} == ${primary} ] ; then
+      echo "Display is disconnected (${primary})"
+      notify ${app_name} "Display is disconnected (${primary})"
+      exit 0
+   fi
+done
+
+# Build parameter string
+str="--turn-on ${primary}"
+for disp in `xrasengan --list-connected`
+do
+	if [ "${disp}" == "$primary" ] ; then
+		continue;
+	fi
+	
+	str="${str} --turn-off ${disp}"
+done
+xrasengan ${str}
+echo "Switched to ${primary}."
+notify ${app_name} "Switched to ${primary}."

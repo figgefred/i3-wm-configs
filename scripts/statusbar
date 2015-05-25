@@ -1,0 +1,81 @@
+#!/bin/bash
+
+num_regex='^[0-9]+(\.[0-9]+)?$'
+
+function invalid_arguments {
+	echo "ERROR: Invalid arguments."
+	exit 0
+}
+
+if [ $# -lt 2 ] ; then
+	invalid_arguments
+fi
+
+if [[ -z "$1" ]] ; then
+	invalid_arguments
+elif [[ $1 =~ ${num_regex} ]] ; then
+	value=$1
+else
+	invalid_arguments
+fi
+if [[ -z "$2" ]] ; then
+	invalid_arguments
+elif [[ $2 =~ ${num_regex} ]] ; then
+	full=$2
+else
+	invalid_arguments
+fi
+if [[ -z "$3" ]] ; then
+	target_width=100
+elif [[ $3 =~ ${num_regex} ]] ; then
+	target_width=$3
+else
+	target_width=100
+fi
+
+function floatToint {
+	local casted_val=""
+    printf -v casted_val %.0f "$1"
+    echo "${casted_val}"
+}
+
+function toBarCount {
+	local val=$1
+	local bar_count=""
+	let "bar_count= (( (${target_width}*${val})/${full} ))"
+	#let "bar_count= (${target_width}/${full})/${val}"
+	echo "${bar_count}"
+}
+
+function restBarCount {
+	local val=$1
+	local bar_count=""
+	let "bar_count= (( (${target_width}*${val})%${full} ))"
+	#let "bar_count= (${target_width}/${full})/${val}"
+	echo "${bar_count}"
+}
+
+value=`floatToint ${value}`
+full=`floatToint ${full}`
+target_width=`floatToint ${target_width}`
+full_bars=`toBarCount ${value}`
+let "break_point= (( ${target_width}/2 ))"
+
+rest=`restBarCount ${value}`
+rest=`toBarCount ${rest}`
+if [[ "${rest}" -gt "0" ]] ; then
+		let "full_bars= (( ${full_bars} + 1  ))"
+fi
+
+#echo "full: ${full}"
+#echo "val: ${value}"
+#echo "target_width: ${target_width}"
+#echo "full_bars: ${full_bars}"
+#echo "Rest: ${rest}"
+
+statusbar=""
+for (( i=0; i<${full_bars}; i++ ))
+do
+	statusbar="${statusbar}|"
+done
+echo "${statusbar}"

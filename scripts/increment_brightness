@@ -1,0 +1,20 @@
+#!/bin/bash
+pos_num_regex='^\+[0-9]+$'
+num_regex='^[0-9]+$'
+neg_num_regex='^-[0-9]+$'
+val="$1"
+if [[ $val =~ ${pos_num_regex} ]] ; then
+        val="${val:1}"
+fi
+if [[ $val =~ ${num_regex} ]] ; then
+        num=$val
+        sign=-inc
+elif [[ $val =~ ${neg_num_regex} ]] ; then
+        let "num=(( 0 - $val ))"
+        sign=-dec
+else
+        num=2
+        sign=-inc
+fi
+xbacklight ${sign} ${num}
+pkill -RTMIN+2 i3blocks

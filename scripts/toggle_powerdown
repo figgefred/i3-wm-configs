@@ -1,0 +1,46 @@
+#!/bin/bash
+
+function print_powermode {
+   local pw=$1
+   if [ "${noprint}" == "false" ] ; then
+      if [ "0" == ${pw} ] ; then
+         echo "OFF"
+         echo "OFF"
+         echo "#FF0000"
+      else
+         echo "ACTIVE"
+      fi
+   fi
+}
+
+noprint=true
+powerdown=`cat /opt/states/powerdown`
+if [ ! -z "$1" ] ; then
+   noprint=false
+   if [ -z "$2" ] ; then
+      print_powermode ${powerdown}
+      exit 0
+   fi
+fi
+
+if [ "1" == ${powerdown} ] ; then
+   sudo powerup
+else
+   sudo powerdown
+fi
+
+powerdown=`cat /opt/states/powerdown`
+print_powermode ${powerdown}
+
+. /etc/default/cpupower
+if [ -z "${max_freq}" ] ; then
+        max_freq=`/opt/scripts/default-cpu-freq_max`
+fi
+
+#echo "this is ${max_freq}"
+sudo cpupower frequency-set --max ${max_freq} > /dev/null
+
+# Signal 'cpu-governor'
+pkill -RTMIN+7 i3blocks
+pkill -RTMIN+8 i3blocks
+

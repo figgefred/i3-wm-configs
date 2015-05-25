@@ -1,0 +1,26 @@
+#!/bin/bash
+num_regex='^[0-9]+$'
+if [[ -z "$1" ]] ; then
+	full=100
+elif [[ $1 =~ ${num_regex} ]] ; then
+	full=$1
+	#echo "value is ${value}"
+else
+	full=100
+fi
+
+mute_txt="<< MUTE >>"
+volume=`/usr/libexec/i3blocks/volume`
+vol_regex='^[0-9]+%$'
+if [[ ! ${volume} =~ ${vol_regex} ]] ; then
+	echo "${mute_txt}"
+	exit 0
+fi
+volume="${volume:0:-1}"
+if [ "0" -eq "${volume}" ] ; then
+	echo "${mute_txt}"
+	exit 0
+fi
+statusbar=`~/.i3/scripts/statusbar ${volume} 100 ${full}`
+echo "${statusbar}"
+

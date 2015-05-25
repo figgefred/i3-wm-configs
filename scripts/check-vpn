@@ -1,0 +1,9 @@
+#!/bin/bash
+
+function setval { printf -v "$1" "%s" "$(cat)"; declare -p "$1"; }
+
+eval "$( ip addr show dev tun0 2> >(setval errval) > >(setval stdval); )"
+if [ ! -z "${stdval}" ] ; then
+	echo "up"
+fi
+

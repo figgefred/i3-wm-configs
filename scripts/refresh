@@ -1,0 +1,4 @@
+#!/bin/bash
+rm -rf ~/.cache/mopidy/spotify/
+alsactl restore
+xrasengan --try-reload-active-layout

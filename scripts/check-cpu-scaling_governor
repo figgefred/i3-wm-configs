@@ -1,0 +1,6 @@
+#!/bin/bash
+for j in `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`
+do
+	echo "$j"
+	exit 0
+done
