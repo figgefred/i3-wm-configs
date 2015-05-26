@@ -13,8 +13,16 @@ function print_powermode {
    fi
 }
 
+powerdown_status_file="/dev/shm/status_powerdown"
+
 noprint=true
-powerdown=`cat /opt/states/powerdown`
+powerdown=`cat ${powerdown_status_file}`
+
+if [ -z "${powerdown}" ] ; then
+   # Assume powerdown is per default active
+   powerdown=1
+fi
+
 if [ ! -z "$1" ] ; then
    noprint=false
    if [ -z "$2" ] ; then
@@ -29,18 +37,21 @@ else
    sudo powerdown
 fi
 
-powerdown=`cat /opt/states/powerdown`
+powerdown=`cat ${powerdown_status_file}`
 print_powermode ${powerdown}
 
-. /etc/default/cpupower
-if [ -z "${max_freq}" ] ; then
-        max_freq=`/opt/scripts/default-cpu-freq_max`
+if [ "${powerdown}" -eq "0" ] ; then
+	. /etc/default/cpupower
+	if [ -z "${max_freq}" ] ; then
+	        max_freq=`/opt/scripts/default-cpu-freq_max`
+	fi
+	sudo cpupower frequency-set --max ${max_freq} > /dev/null
+	# Signal 'cpu-freq'
+	pkill -RTMIN+8 i3blocks
 fi
 
-#echo "this is ${max_freq}"
-sudo cpupower frequency-set --max ${max_freq} > /dev/null
+# Signal 'brightness'
+pkill -RTMIN+2 i3blocks
 
 # Signal 'cpu-governor'
 pkill -RTMIN+7 i3blocks
-pkill -RTMIN+8 i3blocks
-

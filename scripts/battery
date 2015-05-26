@@ -3,6 +3,8 @@
 # Copyright 2014 Pierre Mavro <deimos@deimos.fr>
 # Copyright 2014 Vivien Didelot <vivien@didelot.org>
 #
+# Modified 2015 Frederick Ceder <frederick@ceders.net>
+#
 # Licensed under the terms of the GNU GPL v3, or any later version.
 #
 # This script is meant to use with i3blocks. It parses the output of the "acpi"
@@ -11,6 +13,14 @@
 #
 # The color will gradually change for a percentage below 85%, and the urgency
 # (exit code 33) is set if there is less that 5% remaining.
+#
+# The script takes 1 argument, which is an id for which 
+# battery to monitor. Usually this is either 0 for one 
+# battery. (0 or 1 for two etc.)
+#
+# This script is now dependent on other scripts part of 
+# this git repot: https://github.com/figgefred/i3-wm-configs.git
+#
 
 use strict;
 use warnings;

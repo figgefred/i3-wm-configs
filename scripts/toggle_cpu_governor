@@ -45,12 +45,19 @@ if [ -z "${max_freq}" ] ; then
 	max_freq=`/opt/scripts/default-cpu-freq_max`
 fi
 
-#echo "this is ${max_freq}"
 sudo cpupower frequency-set --max ${max_freq} > /dev/null
-#echo "set new max back to ${max_freq}"
+
+if [ "${new}" != "powersave" ] ; then
+        . /etc/default/cpupower
+        if [ -z "${max_freq}" ] ; then
+                max_freq=`/opt/scripts/default-cpu-freq_max`
+        fi
+        sudo cpupower frequency-set --max ${max_freq} > /dev/null
+        # Signal 'cpu-freq'
+        pkill -RTMIN+8 i3blocks
+fi
+
+
 sudo cpupower frequency-set --governor ${new} > /dev/null
 curr_gov=`/opt/scripts/check-cpu-scaling_governor`
 print_powermode ${curr_gov}
-
-# Signal 'cpu-freq'
-pkill -RTMIN+8 i3blocks

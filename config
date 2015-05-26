@@ -226,8 +226,8 @@ bindsym $mod+l exec xscreensaver-command -lock
 #bindsym Print exec printscreen
 
 # Brightness
-bindsym XF86MonBrightnessDown  exec ~/.i3/scripts/increment_brightness -10
-bindsym XF86MonBrightnessUp  exec   ~/.i3/scripts/increment_brightness  10
+bindsym XF86MonBrightnessDown  exec ~/.i3/scripts/increment_brightness -5
+bindsym XF86MonBrightnessUp  exec   ~/.i3/scripts/increment_brightness  5
 
 # Toggle
 bindsym XF86AudioMute exec ~/.i3/scripts/toggle_volume
