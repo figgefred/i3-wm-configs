@@ -87,34 +87,31 @@ bindsym $mod+c focus child
 # * WORKSPACES
 # **********************************************************
 
-set $WS1 1:   TERM
-set $WS2 2:   WEB
-set $WS4 4:   DATA
-set $WS3 3:   WORK
-set $WS5 5:    OTHER
+set $WSTERM 1:   TERM
+set $WSWEB 2:   WEB
+set $WSWORK 3:   WORK
+set $WSDATA 4:   DATA
 
 # switch to workspace
-bindsym $mod+1 workspace $WS1
-bindsym $mod+2 workspace $WS2
-bindsym $mod+3 workspace $WS3
-bindsym $mod+4 workspace $WS4
-bindsym $mod+5 workspace $WS5
+bindsym $mod+1 workspace $WSTERM
+bindsym $mod+2 workspace $WSWEB
+bindsym $mod+3 workspace $WSWORK
+bindsym $mod+4 workspace $WSDATA
+bindsym $mod+5 workspace 5
 bindsym $mod+6 workspace 6
 bindsym $mod+7 workspace 7
 bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
-#bindsym $mod+Tab workspace next
-#bindsym $mod+Shift+Tab workspace prev
 bindsym $mod+Right workspace next
 bindsym $mod+Left workspace prev
 
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace $WS1
-bindsym $mod+Shift+2 move container to workspace $WS2
-bindsym $mod+Shift+3 move container to workspace $WS3
-bindsym $mod+Shift+4 move container to workspace $WS4
+bindsym $mod+Shift+1 move container to workspace $WSTERM
+bindsym $mod+Shift+2 move container to workspace $WSWEB
+bindsym $mod+Shift+3 move container to workspace $WSWORK
+bindsym $mod+Shift+4 move container to workspace $WSDATA
 bindsym $mod+Shift+5 move container to workspace 5
 bindsym $mod+Shift+6 move container to workspace 6
 bindsym $mod+Shift+7 move container to workspace 7
@@ -162,20 +159,21 @@ mode "resize" {
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-  #tray_output HDMI2
+#  tray_output HDMI2
 #  position          top
    position 	     bottom
-  #status_command py3status -s -c ~/.i3/i3barconfig
-  status_command i3blocks -c ~/.i3/i3blocks.conf
-  colors {
-    separator #666666
-    background #222222
-    statusline #dddddd
-    focused_workspace #0088CC #0088CC #ffffff
-    active_workspace #333333 #333333 #ffffff
-    inactive_workspace #333333 #333333 #888888
-    urgent_workspace #2f343a #900000 #ffffff
-  }
+	status_command i3blocks -c ~/.i3/i3blocks.conf
+  
+	font pango:DejaVu Sans Mono, Icons 9
+	colors {
+		separator #666666
+		background #222222
+		statusline #dddddd
+		focused_workspace #0088CC #0088CC #ffffff
+		active_workspace #333333 #333333 #ffffff
+		inactive_workspace #333333 #333333 #888888
+		urgent_workspace #2f343a #900000 #ffffff
+	}
 }
 
 
@@ -214,6 +212,12 @@ exec --no-startup-id nitrogen --restore
 # Start xscreensaver
 exec --no-startup-id /usr/bin/xscreensaver -no-splash
 exec --no-startup-id mopidy 
+
+# Start <exec> on a workspace
+exec --no-startup-id i3-msg 'workspace $WSTERM; exec terminator; workspace $WSTERM'
+exec --no-startup-id i3-msg 'workspace $WSWEB; exec firefox; workspace $WSTERM'
+exec --no-startup-id i3-msg 'workspace $WSWORK; exec geany; workspace $WSTERM'
+#exec --no-startup-id i3-msg 'workspace $WSDATA; exec filemanager; workspace $WSTERM'
 
 
 # ****************************************************************
@@ -260,11 +264,10 @@ bindsym $mod+F4 exec /opt/scripts/display_only_one
 # * Window Rules
 # *********
 for_window [class="Vlc"] floating enable
-for_window [class=Gucharmap] floating enable
 for_window [title="ranger-opened-by-app"] floating enable
 
-assign [class="Chromium"] $WS2
-assign [class="^URxvt$" title="^ranger$"] $WS3
+assign [class="Firefox"] $WSWEB
+assign [class="Geany"] $WSWORK
 client.focused #0088CC #0088CC #ffffff #dddddd
 client.focused_inactive #333333 #333333 #888888 #292d2e
 client.unfocused #333333 #333333 #888888 #292d2e

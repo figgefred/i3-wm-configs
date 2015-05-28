@@ -61,7 +61,9 @@ close(TIME);
 
 chomp($status);
 chomp($percent);
-chomp($timeleft);
+if($timeleft) {
+   chomp($timeleft);
+}
 
 $full_text = "$percent%";
 

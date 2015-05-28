@@ -39,9 +39,20 @@ function one_battery {
 }
 
 function eval_color {
-   local perc1=`/opt/scripts/battery-charge ${bat_one}`
-   local perc2=`/opt/scripts/battery-charge ${bat_two}`   
+   local status0=$1
+   local status1=$2
+   if [ "${status0}" == "Charging" ] ; then
+      echo "#00FF00"
+      exit 0
+   elif [ "${status1}" == "Charging" ] ; then
+      echo "#00FF00"
+      exit 0
+   fi
+   
+   local perc1=`/opt/scripts/battery-charge 0`
+   local perc2=`/opt/scripts/battery-charge 1`   
    let "perc= (( (perc1+perc2)/2 ))"
+
    if [ "${perc}" -lt "20" ] ; then
       echo "#FF0000"
    elif [ "${perc}" -lt "40" ] ; then
@@ -50,8 +61,7 @@ function eval_color {
       echo "#FFF600"
    elif [ "${perc}" -lt "80" ] ; then
       echo "#A8FF00"
-   fi
-      
+   fi 
 }
 
 function two_battery {
@@ -94,9 +104,9 @@ if [ "${status1}" == "Disconnected"  ] ; then
 else
 	output=`two_battery ${status0} ${status1}`
 fi
-print_color=`eval_color`
+print_color=`eval_color ${status0} ${status1}`
 echo "${output}"
 echo "${output}"
-if [ ! -z ${print_color} ] ; then
+if [ ! -z "${print_color}" ] ; then
    echo "${print_color}"
 fi

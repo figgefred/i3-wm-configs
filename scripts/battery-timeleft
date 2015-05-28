@@ -12,28 +12,46 @@ fi
 function strip_leading_0 {
    local regex='^0[0-9]+$'
    local val=$1
+   
    if [ -z "${val}" ] ; then
       return
    fi
    if [[ ${val} =~ $regex ]] ; then
       echo "${val:1}"
+	else
+		echo "${val}"
    fi
 }
 
 tmp=$(exec acpi)
 battery="Battery ${bat_num}"
-regex=" *$battery: +[a-zA-Z]+, +[0-9]+%, +[0-9]+:[0-9]+:[0-9]+ remaining"
+status=`/opt/scripts/battery-status ${bat_num}`
+
+regex=" *${battery}: +[a-zA-Z]+, +[0-9]+%, +[0-9]+:[0-9]+:[0-9]+"
+if [ "${status}" == "Discharging" ] ; then
+	regex="${regex} remaining"
+elif [ "${status}" == "Charging" ] ; then
+	regex="${regex} until charged"
+else
+	exit 0
+fi
+
 val=$( [[ "$tmp" =~ $regex ]] && echo $BASH_REMATCH)
 value=$( [[ "$val" =~ [0-9]+:[0-9]+:[0-9]+ ]] && echo $BASH_REMATCH)
 value=${value// /}
+
 if [ -z "$2" ] ; then
    echo $value
 else
    valArr=(${value//:/ })
+   
    hour=`strip_leading_0 ${valArr[0]}`
    minute=`strip_leading_0 ${valArr[1]}`
-   #seconds=`strip_leading_0 ${valArr[2]}`
-   let "minute=(( hour*60 + minute ))"
+
+#	echo "${hour}"
+#	echo "${minute}"
+
+   let "minute=(( ${hour}*60 + ${minute} ))"
    echo "${minute}m"
 fi
 
