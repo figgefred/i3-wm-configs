@@ -10,5 +10,9 @@ else
 fi
 brightness=`xbacklight -get`
 statusbar=`~/.i3/scripts/statusbar ${brightness} 100 ${full}`
-echo "${statusbar}"
+if [ -z "${statusbar}" ] ; then
+   echo " - DARK - "
+else
+   echo "${statusbar}"
+fi
 

@@ -9,10 +9,32 @@ else
    bat_num=0 
 fi
 
+function strip_leading_0 {
+   local regex='^0[0-9]+$'
+   local val=$1
+   if [ -z "${val}" ] ; then
+      return
+   fi
+   if [[ ${val} =~ $regex ]] ; then
+      echo "${val:1}"
+   fi
+}
+
 tmp=$(exec acpi)
 battery="Battery ${bat_num}"
 regex=" *$battery: +[a-zA-Z]+, +[0-9]+%, +[0-9]+:[0-9]+:[0-9]+ remaining"
 val=$( [[ "$tmp" =~ $regex ]] && echo $BASH_REMATCH)
 value=$( [[ "$val" =~ [0-9]+:[0-9]+:[0-9]+ ]] && echo $BASH_REMATCH)
 value=${value// /}
-echo $value
+if [ -z "$2" ] ; then
+   echo $value
+else
+   valArr=(${value//:/ })
+   hour=`strip_leading_0 ${valArr[0]}`
+   minute=`strip_leading_0 ${valArr[1]}`
+   #seconds=`strip_leading_0 ${valArr[2]}`
+   let "minute=(( hour*60 + minute ))"
+   echo "${minute}m"
+fi
+
+

@@ -1,0 +1,102 @@
+#!/bin/bash 
+
+icon_charging=
+icon_fullcharge=
+icon_muchcharge=
+icon_littlecharge=
+icon_nocharge=
+icon_warning= 
+
+function one_battery {
+	local bat_num=$1
+	local status=$2
+	local only_icon=$3
+	if [ "${status_target}" == "Disconnected" ]; then
+		echo "${icon_warning}bat unplugged"
+	fi
+	percent=`/opt/scripts/battery-charge ${bat_num}`
+	
+	if [ "${status}" == "Charging" ] ; then
+		icon=${icon_charging}
+	else
+		if [ "${percent}" -gt 95  ] ; then
+			icon=${icon_fullcharge}
+		elif [ "${percent}" -gt 50 ] ; then
+			icon=${icon_muchcharge}
+		elif [ "${percent}" -gt 15 ] ; then
+			icon=${icon_littlecharge}
+		else
+			icon=${icon_nocharge}
+		fi
+	fi
+   
+	if [ "${only_icon}" != "icon" ] ; then
+		timeleft=`/opt/scripts/battery-timeleft ${bat_num} min`
+		echo "${icon} ${percent}% ${timeleft}"
+	else
+		echo "${icon}"
+	fi
+}
+
+function eval_color {
+   local perc1=`/opt/scripts/battery-charge ${bat_one}`
+   local perc2=`/opt/scripts/battery-charge ${bat_two}`   
+   let "perc= (( (perc1+perc2)/2 ))"
+   if [ "${perc}" -lt "20" ] ; then
+      echo "#FF0000"
+   elif [ "${perc}" -lt "40" ] ; then
+      echo "#FFAE00"
+   elif [ "${perc}" -lt "60" ] ; then
+      echo "#FFF600"
+   elif [ "${perc}" -lt "80" ] ; then
+      echo "#A8FF00"
+   fi
+      
+}
+
+function two_battery {
+   local status0=$1
+	local status1=$2
+	local bat_one=0
+	local bat_two=1
+	local status_one=${status0}
+	local status_two=${status1}
+	
+   if [ "${status0}" == "Discharging" ] || [ "${status1}" == "Discharging" ] ; then
+		if [ "${status1}" == "Discharging" ] ; then
+			bat_one=1
+			bat_two=0
+			status_one=${status1}
+			status_two=${status0}
+		fi
+	elif [ "${status0}" == "Charging" ] || [ "${status1}" == "Charging" ]; then
+		if [ "${status1}" == "Charging" ] ; then
+			bat_one=1
+			bat_two=0
+			status_one=${status1}
+			status_two=${status0}
+		fi
+	fi
+
+	local output1=`one_battery ${bat_one} ${status_one}`
+	local output2=`one_battery ${bat_two} ${status_two} icon`
+   
+	local output=`echo "${output1} (B${bat_two} ${output2})" | tr -d '\n'`
+   echo "${output}"
+}
+
+status0=`/opt/scripts/battery-status 0`
+status1=`/opt/scripts/battery-status 1`
+status2=`/opt/scripts/battery-status 2`
+
+if [ "${status1}" == "Disconnected"  ] ; then
+	output=`one_battery 0 ${status0}`
+else
+	output=`two_battery ${status0} ${status1}`
+fi
+print_color=`eval_color`
+echo "${output}"
+echo "${output}"
+if [ ! -z ${print_color} ] ; then
+   echo "${print_color}"
+fi

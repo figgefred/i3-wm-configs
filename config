@@ -1,4 +1,5 @@
 set $mod Mod4
+set $modalt Mod1
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -21,6 +22,7 @@ bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
+#bindsym Alt_L+F4 kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run -b -i -nb "#002b36" -nf "#eee8d5" -sb "#cb4b16" -sf "#fdf6e3" -fn "-*-dejavu sans-medium-r-normal--10-*-*-*-*-*-iso8859-1"  "$@"
@@ -36,10 +38,10 @@ bindsym $mod+d exec dmenu_run -b -i -nb "#002b36" -nf "#eee8d5" -sb "#cb4b16" -s
 #bindsym $mod+l focus right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym $mod+$modalt+Left focus left
+bindsym $mod+$modalt+Down focus down
+bindsym $mod+$modalt+Up focus up
+bindsym $mod+$modalt+Right focus right
 
 # move focused window
 #bindsym $mod+Shift+h move left
@@ -76,10 +78,10 @@ bindsym $mod+e layout toggle split
 # bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+bindsym $mod+p focus parent
 
 # focus the child container
-bindsym $mod+Shift+a focus child
+bindsym $mod+c focus child
 
 # **********************************************************
 # * WORKSPACES
@@ -103,8 +105,10 @@ bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
-bindsym $mod+Alt+Right workspace next
-bindsym $mod+Alt+Left workspace prev
+#bindsym $mod+Tab workspace next
+#bindsym $mod+Shift+Tab workspace prev
+bindsym $mod+Right workspace next
+bindsym $mod+Left workspace prev
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $WS1
@@ -127,7 +131,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-bindsym $mod+Shift+l exec "i3lock -i /usr/share/backgrounds/girl.png && sleep 1"
+bindsym $mod+Shift+l exec "i3lock -i ~/.wallpapers/archlinux-simplyblack.png && sleep 1"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -226,31 +230,31 @@ bindsym $mod+l exec xscreensaver-command -lock
 #bindsym Print exec printscreen
 
 # Brightness
-bindsym XF86MonBrightnessDown  exec ~/.i3/scripts/increment_brightness -5
-bindsym XF86MonBrightnessUp  exec   ~/.i3/scripts/increment_brightness  5
+bindsym XF86MonBrightnessDown  exec /opt/scripts/increment_brightness -5
+bindsym XF86MonBrightnessUp  exec   /opt/scripts/increment_brightness  5
 
 # Toggle
-bindsym XF86AudioMute exec ~/.i3/scripts/toggle_volume
-#bindsym XF86TouchpadToggle exec ~/.i3/scripts/toggle_touchpad
+bindsym XF86AudioMute exec /opt/scripts/toggle_volume
+#bindsym XF86TouchpadToggle exec /opt/scripts/toggle_touchpad
 
 # Multimedia keys
 bindsym XF86AudioPlay exec mpc -q toggle
 bindsym XF86AudioPrev exec mpc -q prev
 bindsym XF86AudioNext exec mpc -q next
-bindsym XF86AudioLowerVolume exec ~/.i3/scripts/increment_volume -3
-bindsym XF86AudioRaiseVolume exec ~/.i3/scripts/increment_volume 3
+bindsym XF86AudioLowerVolume exec /opt/scripts/increment_volume -3
+bindsym XF86AudioRaiseVolume exec /opt/scripts/increment_volume 3
 
 # Applications
-bindsym XF86Calculator exec speedcrunch
-bindsym $mod+p exec urxvt -e ranger
+#bindsym XF86Calculator exec speedcrunch
+#bindsym $mod+p exec urxvt -e ranger
 
 # keyboard layout
-bindsym $mod+Ctrl+s exec ~/.i3/scripts/keyboardlayout se
-bindsym $mod+Ctrl+d exec ~/.i3/scripts/keyboardlayout de
+bindsym $mod+Ctrl+s exec /opt/scripts/keyboardlayout se
+bindsym $mod+Ctrl+d exec /opt/scripts/keyboardlayout de
 
 # Some bindings for display control
-bindsym $mod+F5 exec ~/.i3/scripts/refresh
-bindsym $mod+F4 exec ~/.i3/scripts/display_only_one
+bindsym $mod+F5 exec /opt/scripts/refresh
+bindsym $mod+F4 exec /opt/scripts/display_only_one
 
 # *********
 # * Window Rules

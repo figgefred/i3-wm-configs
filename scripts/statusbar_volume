@@ -22,5 +22,9 @@ if [ "0" -eq "${volume}" ] ; then
 	exit 0
 fi
 statusbar=`~/.i3/scripts/statusbar ${volume} 100 ${full}`
-echo "${statusbar}"
+if [ -z "${statusbar}" ] ; then
+   echo " - MUTE - "
+else
+   echo "${statusbar}"
+fi
 

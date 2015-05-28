@@ -1,2 +1,8 @@
 #!/bin/bash
-wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'
+val=`wget --timeout=1 -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'`
+if [ -z "${val}" ] ; then
+	echo "Disconnected"
+else
+	echo "${val}"
+fi
+
