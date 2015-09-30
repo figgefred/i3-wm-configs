@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Dependencies:
+# - dropbox
+# - dropbox-cli
+# - dropbox-cli arch-patch
+
+dropbox && dropbox status || dropbox start

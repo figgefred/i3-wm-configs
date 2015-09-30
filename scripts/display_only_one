@@ -17,8 +17,6 @@ else
    force=false
 fi
 
-app_name="xrasengan"
-
 # Check if output exists
 unknown=true
 for disp in `xrasengan --list-all`
@@ -34,23 +32,21 @@ if [ "${unknown}" == true ] ; then
 	exit 0
 fi
 
-# Check if output is already connected
+# Check if output is already active
 ctr=0
 conn=false
-for disp in `xrasengan --list-connected`
+for disp in `xrasengan --list-active`
 do
-   let "ctr= (( ${ctr} + 1 ))"
    if [ ${disp} == ${primary} ] ; then
       conn=true
+      break
    fi
 done
 if [ "${force}" != "true" ] ; then
    if [ "${conn}" == "true" ] ; then
-      if [ "${ctr}" -lt 2 ] ; then
-         echo "Already connected (${primary}) ${conn}"
+	 echo "Already connected (${primary}) ${conn}"
          notify ${app_name} "Already connected (${primary})"
          exit 0
-      fi
    fi
 fi
 
@@ -59,7 +55,7 @@ ctr=0
 conn=false
 for disp in `xrasengan --list-disconnected`
 do
-   let "ctr= (( ${ctr} + 1 ))"
+   #let "ctr= (( ${ctr} + 1 ))"
    if [ ${disp} == ${primary} ] ; then
       echo "Display is disconnected (${primary})"
       notify ${app_name} "Display is disconnected (${primary})"

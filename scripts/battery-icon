@@ -89,9 +89,9 @@ function two_battery {
 	fi
 
 	local output1=`one_battery ${bat_one} ${status_one}`
-	local output2=`one_battery ${bat_two} ${status_two} icon`
+	local output2=`one_battery ${bat_two} ${status_two}`
    
-	local output=`echo "${output1} (B${bat_two} ${output2})" | tr -d '\n'`
+	local output=`echo "${output1} ${output2}" | tr -d '\n'`
    echo "${output}"
 }
 

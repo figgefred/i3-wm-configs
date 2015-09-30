@@ -20,3 +20,4 @@ value=$( [[ "$val" =~ (('Fully')|('Full')|('Charging')|('Discharging')|('Unknown
 value=${value// /}
 value=${value//Unknown/Idle}
 echo $value
+

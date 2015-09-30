@@ -160,11 +160,10 @@ mode "resize" {
 # finds out, if available)
 bar {
 #  tray_output HDMI2
-#  position          top
-   position 	     bottom
-	status_command i3blocks -c ~/.i3/i3blocks.conf
+   position 	     top
+	status_command i3blocks -c ~/.i3/i3blocks_top.conf
   
-	font pango:DejaVu Sans Mono, Icons 9
+	font pango:DejaVu Sans Mono, Icons 11
 	colors {
 		separator #666666
 		background #222222
@@ -173,6 +172,23 @@ bar {
 		active_workspace #333333 #333333 #ffffff
 		inactive_workspace #333333 #333333 #888888
 		urgent_workspace #2f343a #900000 #ffffff
+	}
+}
+bar {
+#  tray_output HDMI2
+
+   mode hide
+   hidden_state hide
+   modifier Mod4
+
+   position 	     bottom
+	status_command i3blocks -c ~/.i3/i3blocks_bottom.conf
+  
+	font pango:DejaVu Sans Mono, Icons 9
+	colors {
+		separator #666666
+		background #222222
+		statusline #dddddd
 	}
 }
 
@@ -211,12 +227,15 @@ exec --no-startup-id nitrogen --restore
 
 # Start xscreensaver
 exec --no-startup-id /usr/bin/xscreensaver -no-splash
-exec --no-startup-id mopidy 
+exec --no-startup-id mopidy -no-splash
+
+# Start dropbox
+exec --no-startup-id /opt/scripts/start_dropbox -no-splash
 
 # Start <exec> on a workspace
-exec --no-startup-id i3-msg 'workspace $WSTERM; exec terminator; workspace $WSTERM'
-exec --no-startup-id i3-msg 'workspace $WSWEB; exec firefox; workspace $WSTERM'
-exec --no-startup-id i3-msg 'workspace $WSWORK; exec geany; workspace $WSTERM'
+#exec --no-startup-id i3-msg 'workspace $WSTERM; exec terminator; workspace $WSTERM'
+#exec --no-startup-id i3-msg 'workspace $WSWEB; exec firefox; workspace $WSTERM'
+#exec --no-startup-id i3-msg 'workspace $WSWORK; exec geany; workspace $WSTERM'
 #exec --no-startup-id i3-msg 'workspace $WSDATA; exec filemanager; workspace $WSTERM'
 
 
@@ -258,7 +277,7 @@ bindsym $mod+Ctrl+d exec /opt/scripts/keyboardlayout de
 
 # Some bindings for display control
 bindsym $mod+F5 exec /opt/scripts/refresh
-bindsym $mod+F4 exec /opt/scripts/display_only_one
+bindsym $mod+F4 exec /opt/scripts/display_only_one LVDS1 force
 
 # *********
 # * Window Rules

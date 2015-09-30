@@ -1,0 +1,29 @@
+#!/bin/bash
+
+icon=
+transparent_icon=
+sync_icon=
+if [ ! dropbox-cli running ] ; then
+        exit 0
+fi
+
+status_path=/dev/sh,/status_dropbox-icon
+
+touch ${status_path}
+
+val=`cat ${status_path}`
+
+updated="Up to date"
+idle="Idle"
+syncing="syncing"
+starting="Starting"
+connecting="Connecting"
+off="Dropbox isn't running!"
+
+if [ 
+
+
+
+
+echo "1" > /dev/shm/status_dropbox-icon
+

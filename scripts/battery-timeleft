@@ -54,5 +54,3 @@ else
    let "minute=(( ${hour}*60 + ${minute} ))"
    echo "${minute}m"
 fi
-
-
